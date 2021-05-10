@@ -1,0 +1,27 @@
+---
+title: R and Python
+author: 'Chirag Patel'
+date: '2021-05-09'
+slug: r-and-python
+categories: []
+tags: []
+description: ''
+---
+
+Python and R are two different coding languages but they are still able to work together as seen below.
+
+```{r}
+library(reticulate)
+hi<-"Hello"
+```
+
+```{python}
+hi="this is Chirag Patel."
+print(r.hi,hi) 
+```
+
+```{r}
+cat(c(hi,py$hi))
+```
+
+![](https://bestreamer.com/wp-content/uploads/2019/12/01-Bulbasaur-Charmander-Squirtle.jpg)
