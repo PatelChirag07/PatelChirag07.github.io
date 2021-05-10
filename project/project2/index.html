@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Chirag Patel" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>Project 2: Modeling, Testing, and Predicting</title>
+    <meta name="generator" content="Hugo 0.83.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project2/">Project 2: Modeling, Testing, and Predicting</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<pre class="r"><code>library(readxl)
+PokemonDataset &lt;- read_excel(&quot;PokemonDataset.xlsx&quot;)</code></pre>
+<p>For my project, I utilized data from Pokemon from Generation 1. There are 151 total observations for each variable in this dataset. The first variable studied is Evolution, which is the Pokemon’s relative position in the Evolution Line. Pokemon start off in the Base form, and then may evolve into Stage 1 and Stage 2 evolutions. The next 5 variables studied are attack, special attack, defense, special defense, and speed. These are all unique to each Pokemon, and are numerical values that correspond to their strength in each respective statistic. Evolution will also be mutated into a binary categorical variable, studying Pokemon on if they are in the Base form or an evolved form of the Pokemon.
+# Manova/Anova Testing
+## MANOVA Test</p>
+<pre class="r"><code>man1 &lt;- manova(cbind(attack, defense, sp_attack, sp_defense, speed) ~ Evolution, data = PokemonDataset)
+summary(man1)</code></pre>
+<pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## Evolution 2 0.31034 5.3265 10 290 3.211e-07 ***
+## Residuals 148
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<p>A Manova test was performed to see if the variables will be significant or not. The results showed a p-value of 5.166e-08, which means at least one of the variables was statistically significant. To see which variables were statisticaly significant, univariate ANOVA tests will be performed for each variable. It appears that each MANOVA observations were met, since there were enough observation for each criteria studied. There also does not appear to be many outliers, and there seems to be a linear relationship between the dependent variables, meaning I can assume that most MANOVA assumptions are likely to be met.</p>
+<div id="univariate-anova-test" class="section level2">
+<h2>Univariate ANOVA Test</h2>
+<pre class="r"><code>summary.aov(man1)</code></pre>
+<pre><code>## Response attack :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Evolution 2 14436 7217.8 8.9511 0.0002139 ***
+## Residuals 148 119340 806.4
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response defense :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Evolution 2 5607 2803.53 3.4059 0.0358 *
+## Residuals 148 121824 823.14
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response sp_attack :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Evolution 2 31706 15852.8 17.229 1.877e-07 ***
+## Residuals 148 136181 920.1
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response sp_defense :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Evolution 2 21584 10792 20.061 1.953e-08 ***
+## Residuals 148 79618 538
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response speed :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Evolution 2 9399 4699.7 5.8829 0.00348 **
+## Residuals 148 118234 798.9
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<p>The results of the univariate ANOVA tests show that all variable differences when controlling for Evolution are statistically significant. This can be seen with a p-value of 0.0002139 for attack, 0.0358 for defense, 1.877e-07 for special attack, 1.953e-08 for special defense, and 0.00348 for speed.</p>
+</div>
+</div>
+<div id="post-hoc-t-tests" class="section level1">
+<h1>Post-Hoc T-tests</h1>
+<pre class="r"><code>pairwise.t.test(PokemonDataset$attack, PokemonDataset$Evolution, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: PokemonDataset$attack and PokemonDataset$Evolution
+##
+## Base Stage 1
+## Stage 1 0.00529 -
+## Stage 2 0.00015 0.04940
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(PokemonDataset$defense, PokemonDataset$Evolution, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: PokemonDataset$defense and
+PokemonDataset$Evolution
+##
+## Base Stage 1
+## Stage 1 0.041 -
+## Stage 2 0.031 0.432
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(PokemonDataset$sp_attack, PokemonDataset$Evolution, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: PokemonDataset$sp_attack and
+PokemonDataset$Evolution
+##
+## Base Stage 1
+## Stage 1 0.00242 -
+## Stage 2 5.5e-08 0.00039
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(PokemonDataset$sp_defense, PokemonDataset$Evolution, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: PokemonDataset$sp_defense and
+PokemonDataset$Evolution
+##
+## Base Stage 1
+## Stage 1 3.4e-06 -
+## Stage 2 2.1e-07 0.03
+##
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(PokemonDataset$speed, PokemonDataset$Evolution, p.adj = &quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  PokemonDataset$speed and PokemonDataset$Evolution 
+## 
+##         Base   Stage 1
+## Stage 1 0.0198 -      
+## Stage 2 0.0021 0.1278 
+## 
+## P value adjustment method: none</code></pre>
+<p>Pairwise t-tests were performed to see if the mean differences for each evolution stage had a significant difference for each statistic for the Pokemon. Generally, the mean difference was statistically significant.</p>
+<div id="probability-of-type1-error-and-bonferroni-corrected-post-hoc-t-tests." class="section level2">
+<h2>Probability of Type1 Error and Bonferroni Corrected Post-hoc T-Tests.</h2>
+<pre class="r"><code>(1-(0.95^21))</code></pre>
+<pre><code>## [1] 0.6594384</code></pre>
+<pre class="r"><code>(0.05/21)</code></pre>
+<pre><code>## [1] 0.002380952</code></pre>
+<pre class="r"><code>pairwise.t.test(PokemonDataset$attack, PokemonDataset$Evolution, p.adj = &quot;bonferroni&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: PokemonDataset$attack and PokemonDataset$Evolution
+##
+## Base Stage 1
+## Stage 1 0.01587 -
+## Stage 2 0.00045 0.14819
+##
+## P value adjustment method: bonferroni</code></pre>
+<pre class="r"><code>pairwise.t.test(PokemonDataset$defense, PokemonDataset$Evolution, p.adj = &quot;bonferroni&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: PokemonDataset$defense and
+PokemonDataset$Evolution
+##
+## Base Stage 1
+## Stage 1 0.122 -
+## Stage 2 0.092 1.000
+##
+## P value adjustment method: bonferroni</code></pre>
+<pre class="r"><code>pairwise.t.test(PokemonDataset$sp_attack, PokemonDataset$Evolution, p.adj = &quot;bonferroni&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: PokemonDataset$sp_attack and
+PokemonDataset$Evolution
+##
+## Base Stage 1
+## Stage 1 0.0073 -
+## Stage 2 1.7e-07 0.0012
+##
+## P value adjustment method: bonferroni</code></pre>
+<pre class="r"><code>pairwise.t.test(PokemonDataset$sp_defense, PokemonDataset$Evolution, p.adj = &quot;bonferroni&quot;)</code></pre>
+<pre><code>##
+## Pairwise comparisons using t tests with pooled SD
+##
+## data: PokemonDataset$sp_defense and
+PokemonDataset$Evolution
+##
+## Base Stage 1
+## Stage 1 1.0e-05 -
+## Stage 2 6.2e-07 0.089
+##
+## P value adjustment method: bonferroni</code></pre>
+<pre class="r"><code>pairwise.t.test(PokemonDataset$speed, PokemonDataset$Evolution, p.adj = &quot;bonferroni&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  PokemonDataset$speed and PokemonDataset$Evolution 
+## 
+##         Base   Stage 1
+## Stage 1 0.0593 -      
+## Stage 2 0.0064 0.3833 
+## 
+## P value adjustment method: bonferroni</code></pre>
+<p>The pairwise t-tests showed that the probability of a type I error was 0.6594384, which is equal to 65.94%. The adjusted significance level for this was equal to 0.002380952. Bonferroni corrected pairwise t-tests were then conducted, finding that there were mean differences between the Base and Stage 1 evolutions for attack, special attack, and defense were statistically significant. The mean differences between stage 1 and stage 2 for only special attack were statistically significant, and all of the mean differences between Base and Stage 2 for each numeric variable was found to be statistically significant. This can be explained due to the relative strength of Stage 2 Pokemon compared to Base Pokemon, as evolution results in stronger Pokemon.</p>
+</div>
+</div>
+<div id="randomization-testing" class="section level1">
+<h1>Randomization Testing</h1>
+<div id="mean-difference" class="section level2">
+<h2>Mean Difference</h2>
+<pre class="r"><code>NewPokemonDataset &lt;- PokemonDataset %&gt;% filter(Evolution == &quot;Base&quot; | Evolution == &quot;Stage 1&quot;)
+
+rand_dist &lt;- vector()
+
+for (i in 1:5000) {
+    new &lt;- data.frame(attack=sample(NewPokemonDataset$attack), 
+        Evolution = NewPokemonDataset$Evolution)
+    rand_dist[i] &lt;- mean(new[new$Evolution == &quot;Base&quot;,]$attack) - mean(new[new$Evolution == &quot;Stage 1&quot;,]$attack)}
+NewPokemonDataset %&gt;% group_by(Evolution) %&gt;% summarize(means = mean(attack)) %&gt;% 
+    summarize(mean_diff = diff(means))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   mean_diff
+##       &lt;dbl&gt;
+## 1      14.0</code></pre>
+<pre class="r"><code>mean(rand_dist &gt; 13.99908 | rand_dist &lt; -13.99908)</code></pre>
+<pre><code>## [1] 0.0062</code></pre>
+<p>The mean difference between Pokemon in the Base stage and the Stage 1 evolution stage in the attack statistic value was found to be statistically significant. The null hypothesis for this experiment states that the mean difference of the attack stat for Base and Stage 1 Pokemon was the same. With a p-value of 0.0052, the null hypothesis can be rejected. A plot was then created to visualize the null distribution and the test statistic of attack. The plot shows that most of the data fall within the two extremes for the test statistic, which means the actual mean difference was large enough to assume that the attack stat differs in these two Evolution stages of Pokemon by something other than random chance. This sampling distribution also shows that the probability of getting a difference as big as 13.99908 is less than 0.05.</p>
+</div>
+<div id="plot-visualization" class="section level2">
+<h2>Plot Visualization</h2>
+<pre class="r"><code>{hist(rand_dist,main=&quot;&quot;,ylab=&quot;&quot;); abline(v = c(-13.99908, 13.99908),col=&quot;red&quot;)}</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" />
+The distribution of this sample against the actual mean difference test statistic shows that even under random sampling, there is a significant mean difference between evolution stages “Base” and “Stage 1” for attack.</p>
+</div>
+</div>
+<div id="linear-regression-modeling" class="section level1">
+<h1>Linear Regression Modeling</h1>
+<div id="linear-regression" class="section level2">
+<h2>Linear Regression</h2>
+<pre class="r"><code>Poke3 &lt;- PokemonDataset %&gt;% select(attack, sp_attack, Ptype = &quot;Primary Type&quot;, defense, sp_defense, speed, Evolution, `Dex Number`)
+
+
+Poke3$attack_c &lt;- Poke3$attack - mean(Poke3$attack,na.rm = T)
+pokeTest &lt;- Poke3 %&gt;% filter(Ptype == &quot;rock&quot; | Ptype == &quot;bug&quot; | Ptype == &quot;electric&quot; | Ptype == &quot;fire&quot; | Ptype == &quot;water&quot; | Ptype == &quot;grass&quot; | Ptype == &quot;fighting&quot; | Ptype == &quot;ground&quot; | Ptype == &quot;poison&quot; | Ptype == &quot;normal&quot; | Ptype == &quot;psychic&quot;)
+fit &lt;- lm(sp_attack ~ attack_c * Evolution, data=pokeTest)
+summary(fit)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = sp_attack ~ attack_c * Evolution, data =
+pokeTest)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -50.264 -21.431 -6.307 13.912 108.724
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 58.9478 3.7166 15.861 &lt; 2e-16 ***
+## attack_c 0.3489 0.1228 2.840 0.0052 **
+## EvolutionStage 1 13.2189 5.2856 2.501 0.0136 *
+## EvolutionStage 2 56.1833 9.6983 5.793 4.64e-08 ***
+## attack_c:EvolutionStage 1 -0.3771 0.1795 -2.100 0.0376 *
+## attack_c:EvolutionStage 2 -1.2000 0.2993 -4.010 0.0001
+***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 28.49 on 135 degrees of freedom
+## Multiple R-squared: 0.2667, Adjusted R-squared: 0.2395
+## F-statistic: 9.819 on 5 and 135 DF, p-value: 5.06e-08</code></pre>
+<p>Controlling for Evolution, Pokemon with a mean attack have a special attack value of the intercept, which is 58.9478. Still controlling for Evolution, every 1 unit increase from the mean attack corresponds to a special attack value increase of 0.3489. Furthermore, the following data analyzes the special attack value of a Pokemon of any given Evolution Stage at the mean value of attack. For example, when examining a Pokemon in Stage 2 of Evolution, it is seen that at a mean value for attack, the special attack value of a Stage 2 Pokemon is about 56.1833 greater than the value when controlled for Evolution. Furthermore, the effect of mean attack on special attack for Stage 2 Pokemon are about -1.2 lower than when controlled for Evolution. Finally, the R^2 value of 0.2667 shows that 26.67% of variability in special attack is explained by this model of interaction between attack and Evolution.</p>
+</div>
+<div id="plotting-linear-regression" class="section level2">
+<h2>Plotting Linear Regression</h2>
+<pre class="r"><code>pokeTest %&gt;% select(sp_attack, attack_c, Evolution) %&gt;% na.omit %&gt;% ggplot(aes(attack_c, sp_attack, color = Evolution)) + geom_point() + geom_smooth(method=&quot;lm&quot;) + geom_vline(xintercept=mean(pokeTest$attack_c,na.rm=T,lty=2))</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-10-1.png" width="768" style="display: block; margin: auto;" />
+## Check Assumptions</p>
+<pre class="r"><code>resids &lt;- fit$residuals
+fitvals &lt;- fit$fitted.values
+ggplot() + geom_point(aes(fitvals,resids)) + geom_hline(yintercept=0, color=&quot;red&quot;)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-11-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ks.test(resids, &quot;pnorm&quot;, mean=0, sd(resids))</code></pre>
+<pre><code>## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  resids
+## D = 0.10772, p-value = 0.07582
+## alternative hypothesis: two-sided</code></pre>
+<p>The linear regression model shows that the model passes the assumption of homoskedasticity since the graph does not fan out. However, the residual plot shows linear trends in the data, so the model does violate linearity. Finally, the p-value of 0.07592 from the Kolmogorov-Smirnov test shows that this model passes the assumptions of normality, causing me to fail to reject the null hypothesis that states that the linear regression model is normally distributed.</p>
+</div>
+<div id="robust-standard-errors-in-linear-regression" class="section level2">
+<h2>Robust Standard Errors in Linear Regression</h2>
+<pre class="r"><code>coeftest(fit, vcov = vcovHC(fit))</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 58.94775 5.15315 11.4392 &lt; 2.2e-16 ***
+## attack_c 0.34885 0.23378 1.4922 0.1379794
+## EvolutionStage 1 13.21890 6.46663 2.0442 0.0428806 *
+## EvolutionStage 2 56.18333 15.85222 3.5442 0.0005416 ***
+## attack_c:EvolutionStage 1 -0.37708 0.28098 -1.3420
+0.1818477
+## attack_c:EvolutionStage 2 -1.19996 0.54554 -2.1996
+0.0295380 *
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<p>The linear regression model with robust standard errors find that effects of mean attack stat are no longer statistically significant compared to the linear model. Furthermore, the effects on special attack for stage 1 Pokemon at a mean attack stat are no longer significant. The standard errors for each of these variables increased in relation to the original linear regression model.</p>
+</div>
+</div>
+<div id="linear-regression-model-with-bootstrapping" class="section level1">
+<h1>Linear Regression Model with Bootstrapping</h1>
+<pre class="r"><code>samp_distn &lt;- replicate(5000,{
+  boot_dat &lt;- sample_frac(pokeTest, replace=T)
+  fit2 &lt;- lm(sp_attack ~ attack_c * Evolution, data=boot_dat)
+  coef(fit2)
+
+  })
+
+samp_distn %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
+<pre><code>## (Intercept) attack_c EvolutionStage 1 EvolutionStage 2
+attack_c:EvolutionStage 1
+## 1 4.657532 0.2078734 6.045798 13.07616 0.2533788
+## attack_c:EvolutionStage 2
+## 1 0.4681738</code></pre>
+<p>Comparing the Linear Regression Model with Bootstrapping had increased errors for each variable when compared to the original Linear Regression Model, which means the p-values most likely went up. However, this model had less error than the Linear Regression Model with Bootstrapping, meaning the p-values comparatively went down.</p>
+</div>
+<div id="logistic-regression-modeling-with-two-explanatory-variables" class="section level1">
+<h1>Logistic Regression Modeling with Two Explanatory Variables</h1>
+<div id="logistic-regression" class="section level2">
+<h2>Logistic Regression</h2>
+<pre class="r"><code>Poke4 &lt;- PokemonDataset %&gt;% mutate(y=ifelse(Evolution==&quot;Base&quot;,1,0))
+Poke4_fit &lt;- glm(y ~ attack + sp_attack, data=Poke4, family=binomial(link=&quot;logit&quot;))
+exp(coef(Poke4_fit))</code></pre>
+<pre><code>## (Intercept)      attack   sp_attack 
+##  18.2793401   0.9800212   0.9762481</code></pre>
+<p>Creating a logistic regression model allows me to predict the odds of a Pokemon being a Base evolution Pokemon from the two explanatory variables of attack and special attack. This model shows that for a 1 point increase in attack while controlling for special attack, the probability of a Pokemon being in the Base form is multiplied by a coefficient of 0.9800212. For a 1 point increase in Special Attack controlled for attack, the odds of a Pokemon being in the Base form is multiplied by a factor of 0.9762481. The results of this test show that both attack and special attack increases still have relatively the same impact on the odds of a Pokemon being in the Base form.
+## Confusion Matrix and Accuracy, Sensitivity, and Specificity</p>
+<pre class="r"><code>probability &lt;- predict(Poke4_fit, type = &quot;response&quot;)
+class_diag(probability, Poke4_fit$y)</code></pre>
+<pre><code>##         acc      sens      spec       ppv       auc
+## 1 0.7615894 0.6764706 0.8313253 0.7666667 0.7934975</code></pre>
+<pre class="r"><code>table(predict = as.numeric(probability &gt; 0.5), truth = Poke4_fit$y) %&gt;% addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0    69  22  91
+##     1    14  46  60
+##     Sum  83  68 151</code></pre>
+<p>The confusion matrix for the logistic regression shows that the Accuracy for the model, which is the proportion of correctly classified Pokemon, is 0.7615894. The sensitivity of the model, which is the proportion of Pokemon that are correctly classified as not in the Base evolution stage, is 0.6764706. The specificity of the model, which is the proportion of Pokemon properly classified as in the Base evolution stage, is 0.8313253. THe precision of the model, which is the proportion of Pokemon classified as not in the Base stage and are actually not in the Base stage is 0.7666667. Lastly, the AUC of the model, which is the probability that a randomly selected Pokemon is in the Base stage vs the a randomly selected pokemon that is not in the Base stage, is 0.7934975. This is considered to be a fair AUC for this model.</p>
+</div>
+</div>
+<div id="density-plot" class="section level1">
+<h1>Density Plot</h1>
+<pre class="r"><code>Poke4 &lt;- Poke4 %&gt;% mutate(Evolution=ifelse(y==1, &quot;Base&quot;, &quot;Non-Base&quot;))
+Poke4$logit &lt;- predict(Poke4_fit, type=&quot;link&quot;)
+Poke4 %&gt;% mutate(Evolution=as.factor(Evolution)) %&gt;% ggplot() + geom_density(aes(logit, fill=Evolution), alpha=0.4) + theme(legend.position=c(0.85, 0.85)) + xlab(&quot;logit(log-odds)&quot;) + geom_vline(xintercept=0)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-17-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="roc-plot-and-auc" class="section level1">
+<h1>ROC Plot and AUC</h1>
+<pre class="r"><code>plot &lt;- ggplot(Poke4) + geom_roc(aes(d=y, m=attack + sp_attack), n.cuts=0)
+plot</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-18-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(plot)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.2063253</code></pre>
+</div>
+<div id="logistic-regression-modeling-with-all-variables" class="section level1">
+<h1>Logistic Regression Modeling with All Variables</h1>
+<div id="logistic-regression-and-in-sample-classification-diagnostics" class="section level2">
+<h2>Logistic Regression and In-Sample Classification Diagnostics</h2>
+<pre class="r"><code>Poke5 &lt;- Poke4 %&gt;% select(y, defense, sp_defense, speed)
+Poke5_fit &lt;- glm(y~ defense + sp_defense + speed, data=Poke5, family=binomial(link=&quot;logit&quot;))
+probability2 &lt;- predict(Poke5_fit, type=&quot;response&quot;)
+class_diag(probability2, Poke5$y)</code></pre>
+<pre><code>##         acc      sens      spec       ppv      auc
+## 1 0.7748344 0.7352941 0.8072289 0.7575758 0.779146</code></pre>
+<p>The logistic regression with In-Sample Classification DIagnostics shows that the Accuracy for the model, which is the proportion of correctly classified Pokemon, is 0.7748344. The sensitivity of the model, which is the proportion of Pokemon that are correctly classified as not in the Base evolution stage, is 0.7352941. The specificity of the model, which is the proportion of Pokemon properly classified as in the Base evolution stage, is 0.8072289. The precision of the model, which is the proportion of Pokemon classified as not in the Base stage and are actually not in the Base stage is 0.7575758. Lastly, the AUC of the model, which is the probability that a randomly selected Pokemon is in the Base stage vs the a randomly selected pokemon that is not in the Base stage, is 0.779146. This is considered to be a fair AUC for this model, but is lower than the previous model from the confusion matrix.</p>
+</div>
+</div>
+<div id="fold-cv-and-average-out-of-sample-classification-diagnostics" class="section level1">
+<h1>10-Fold CV and Average Out-of-Sample Classification Diagnostics</h1>
+<pre class="r"><code>set.seed(1234)
+k=10
+
+data &lt;- Poke5[sample(nrow(Poke5)),]
+folds &lt;- cut(seq(1:nrow(Poke5)),breaks=k, labels=F)
+
+diags &lt;- NULL
+for(i in 1:k){
+  train &lt;- data[folds!=i,]
+  test &lt;- data[folds==i,]
+  truth &lt;- test$y
+  fit &lt;- glm(y~ defense + sp_defense + speed, data=train, family=binomial(link=&quot;logit&quot;))
+  probs &lt;- predict(fit, newdata=test, type=&quot;response&quot;)
+  diags &lt;- rbind(diags,class_diag(probs,truth))
+}
+summarize_all(diags,mean)</code></pre>
+<pre><code>##     acc      sens      spec       ppv       auc
+## 1 0.755 0.7462698 0.7865598 0.7264683 0.7724691</code></pre>
+<p>The 10-fold CV and Average Out-of Sample Classification Diagnostics shows that the Accuracy for the model, which is the proportion of correctly classified Pokemon, is 0.755. The sensitivity of the model, which is the proportion of Pokemon that are correctly classified as not in the Base evolution stage, is 0.7462698. The specificity of the model, which is the proportion of Pokemon properly classified as in the Base evolution stage, is 0.7865598. THe precision of the model, which is the proportion of Pokemon classified as not in the Base stage and are actually not in the Base stage is 0.7264683. Lastly, the AUC of the model, which is the probability that a randomly selected Pokemon is in the Base stage vs the a randomly selected Pokemon that is not in the Base stage, is 0.7724691. This is considered to be a fair AUC for this model, but is slightly worse than the previous model.</p>
+</div>
+<div id="lasso-model" class="section level1">
+<h1>LASSO Model</h1>
+<pre class="r"><code>y &lt;- as.matrix(Poke5$y)
+x &lt;- model.matrix(y~., data=Poke5)[,-1]
+
+cv &lt;- cv.glmnet(x,y,family=&quot;binomial&quot;)
+lasso &lt;- glmnet(x,y,family=&quot;binomial&quot;, lambda=cv$lambda.1se)
+coef(lasso)</code></pre>
+<pre><code>## 4 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                      s0
+## (Intercept)  0.79868069
+## defense      .         
+## sp_defense  -0.01485374
+## speed        .</code></pre>
+<p>Performing a LASSO on the same model and variables as the 10-fold CV shows that only Special Defense was retained. Therefore, this variable is seen to be the best predictor for if a Pokemon is in the Base Stage.</p>
+</div>
+<div id="fold-cv-with-lasso-variables" class="section level1">
+<h1>10-Fold CV with Lasso Variables</h1>
+<pre class="r"><code>set.seed(1234)
+k=10
+
+data &lt;- Poke5[sample(nrow(Poke5)),]
+folds &lt;- cut(seq(1:nrow(Poke5)),breaks=k, labels=F)
+
+diags &lt;- NULL
+for(i in 1:k){
+  train &lt;- data[folds!=i,]
+  test &lt;- data[folds==i,]
+  truth &lt;- test$y
+  fit &lt;- glm(y~ sp_defense, data=train, family=binomial(link=&quot;logit&quot;))
+  probs &lt;- predict(fit, newdata=test, type=&quot;response&quot;)
+  diags &lt;- rbind(diags,class_diag(probs,truth))
+}
+summarize_all(diags,mean)</code></pre>
+<pre><code>##         acc      sens      spec       ppv       auc
+## 1 0.7220833 0.6615476 0.7786233 0.6945238 0.7801328</code></pre>
+<p>Performing the 10-fold CV using special defense which was selected from the LASSO model, the AUC was found to be 0.7801328. This is slightly greater than the previous model, and since all of the AUC values were considered to be close from each other and were of a fair value, the 10-fold CV model is considered to be not over-fitting.</p>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
